@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta charset=utf-8>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Emoji feedback</title>
+  </head>
+  <body>
+    <div class="eq-container">
+      <div class="emoji-button" onClick="post_feedback(2);">
+          <img src="assets/face-heart.svg" alt="Good">
+      </div>
+      <div class="emoji-button" onClick="post_feedback(1);">
+          <img src="assets/face-neutral.svg" alt="Neutral">
+      </div>
+      <div class="emoji-button" onClick="post_feedback(0);">
+        <img src="assets/face-crying.svg" alt="Bad">
+      </div>
+    </div>
+  </body>
+</html>
+<script src="script.js"></script>
