@@ -2,21 +2,11 @@
 #![plugin(rocket_codegen)]
 
 extern crate rocket;
-extern crate serde_json;
-extern crate rocket_contrib;
-#[macro_use]
-extern crate serde_derive;
 
 use std::io;
 use std::path::{Path, PathBuf};
 
-use rocket_contrib::JSON;
 use rocket::response::NamedFile;
-
-#[derive(Debug, Deserialize)]
-struct Feedback {
-    feedback_value: usize,
-}
 
 #[get("/")]
 fn index() -> io::Result<NamedFile> {
@@ -28,9 +18,9 @@ fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
 }
 
-#[post("/feedback", format = "application/json", data = "<val>")]
-fn feedback(val: JSON<Feedback>) {
-    println!("{:?}", val);
+#[post("/feedback/<fb>")]
+fn feedback(fb: &str) {
+    println!("{:?}", fb);
 }
 
 fn rocket() -> rocket::Rocket {

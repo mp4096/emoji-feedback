@@ -5,8 +5,4 @@ authors = ["Mikhail Pak <mikhail.pak@tum.de>"]
 
 [dependencies]
 rocket = "0.2.2"
-rocket_contrib = "0.2.2"
 rocket_codegen = "0.2.2"
-serde = "0.9"
-serde_json = "0.9"
-serde_derive = "0.9"
