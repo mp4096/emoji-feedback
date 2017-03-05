@@ -4,3 +4,6 @@
 
 # rustfmt backups
 *.rs.bk
+
+# Collected data
+*.csv
