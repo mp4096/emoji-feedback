@@ -1,3 +1,3 @@
-function post_feedback(val) {
-  fetch("/feedback/" + val, {method: "POST"})
+function post_feedback(fb) {
+  fetch("/feedback/" + fb, {method: "POST"});
 }
