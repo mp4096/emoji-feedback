@@ -6,7 +6,7 @@ extern crate rocket;
 
 mod file_utils;
 
-use chrono::Local;
+use chrono::{DateTime, Local};
 use rocket::response::NamedFile;
 use rocket::State;
 use std::io;
@@ -14,11 +14,17 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicUsize;
 
 struct Timings {
-    timestamp: AtomicUsize,
+    launch_time: DateTime<Local>,
+    last_ms_from_launch: AtomicUsize, // milliseconds from the launch time
 }
 struct Config {
     log_file: PathBuf,
-    cooldown: usize, // cooldown in seconds
+    cooldown: usize, // cooldown in milliseconds
+}
+
+#[inline]
+fn count_ms_from_datetime(dt0: DateTime<Local>) -> usize {
+    Local::now().signed_duration_since(dt0).num_milliseconds() as usize
 }
 
 #[get("/")]
@@ -32,16 +38,16 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 }
 
 #[post("/feedback/<fb>")]
-fn feedback(fb: &str, last: State<Timings>, conf: State<Config>) -> Result<(), io::Error> {
+fn feedback(fb: &str, tmgs: State<Timings>, conf: State<Config>) -> Result<(), io::Error> {
     use file_utils::append_line_to_file;
     use std::io::ErrorKind;
     use std::sync::atomic::Ordering;
 
-    let curr_timestamp = Local::now().timestamp() as usize;
-    let time_since_last = curr_timestamp - last.timestamp.load(Ordering::Relaxed);
-    last.timestamp.store(curr_timestamp, Ordering::Relaxed);
+    let curr_timestamp = count_ms_from_datetime(tmgs.launch_time);
+    let ms_since_last = curr_timestamp - tmgs.last_ms_from_launch.load(Ordering::Relaxed);
+    tmgs.last_ms_from_launch.store(curr_timestamp, Ordering::Relaxed);
 
-    if time_since_last < conf.cooldown {
+    if ms_since_last < conf.cooldown {
         return Err(io::Error::new(ErrorKind::Other, "button mashing detected"));
     }
 
@@ -61,9 +67,12 @@ fn feedback(fb: &str, last: State<Timings>, conf: State<Config>) -> Result<(), i
 fn main() {
     let conf = Config {
         log_file: PathBuf::from("./feedback.csv"),
-        cooldown: 1, // seconds
+        cooldown: 500, // milliseconds
     };
-    let tmgs = Timings { timestamp: AtomicUsize::new(Local::now().timestamp() as usize) };
+    let tmgs = Timings {
+        launch_time: Local::now(),
+        last_ms_from_launch: AtomicUsize::new(0),
+    };
 
     rocket::ignite()
         .mount("/", routes![index, files, feedback])
