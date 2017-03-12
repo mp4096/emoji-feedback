@@ -10,5 +10,9 @@ publish = false
 
 [dependencies]
 chrono = "^0.3.0"
+clap = "^2.21.1"
 rocket = "^0.2.2"
 rocket_codegen = "^0.2.2"
+serde = "^0.9.11"
+serde_derive = "^0.9.11"
+toml = "^0.3.1"

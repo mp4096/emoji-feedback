@@ -20,3 +20,18 @@ pub fn append_line_to_file<T, U>(path: T, data: U) -> Result<(), Error>
 
     Ok(())
 }
+
+pub fn read_file<T>(path: T) -> Result<String, Error>
+    where T: AsRef<Path>
+{
+    use std::fs::File;
+    use std::io::{BufReader, Read};
+
+    let file = File::open(path.as_ref())?;
+    let mut buf = BufReader::new(file);
+    let mut content = String::new();
+
+    buf.read_to_string(&mut content)?;
+
+    Ok(content)
+}

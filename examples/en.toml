@@ -1,0 +1,6 @@
+log_file = "./feedback.csv"
+cooldown_ms = 500
+
+[template]
+title = "Emoji feedback"
+question = "How was your exercise today?"
