@@ -4,6 +4,7 @@
 extern crate chrono;
 #[macro_use]
 extern crate clap;
+extern crate rocket_contrib;
 extern crate rocket;
 #[macro_use]
 extern crate serde_derive;
@@ -14,6 +15,7 @@ mod file_utils;
 use chrono::{DateTime, Local};
 use rocket::response::NamedFile;
 use rocket::State;
+use rocket_contrib::Template;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicUsize;
@@ -27,11 +29,11 @@ struct Timings {
 struct Config {
     log_file: PathBuf,
     cooldown_ms: usize, // cooldown in milliseconds
-    template: Template,
+    template_context: TemplateContext,
 }
 
-#[derive(Deserialize)]
-struct Template {
+#[derive(Serialize, Deserialize)]
+struct TemplateContext {
     title: String,
     question: String,
 }
@@ -53,8 +55,8 @@ fn count_ms_from_datetime(dt0: DateTime<Local>) -> usize {
 }
 
 #[get("/")]
-fn index() -> io::Result<NamedFile> {
-    NamedFile::open("static/index.html")
+fn index(conf: State<Config>) -> Template {
+    Template::render("index", &conf.template_context)
 }
 
 #[get("/<file..>")]
