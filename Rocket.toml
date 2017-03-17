@@ -1,0 +1,14 @@
+[development]
+address = "localhost"
+port = 8000
+log = "normal"
+
+[staging]
+address = "localhost"
+port = 8000
+log = "normal"
+
+[production]
+address = "localhost"
+port = 8000
+log = "normal"
