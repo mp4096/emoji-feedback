@@ -2,6 +2,9 @@
 # will have compiled files and executables
 /target/
 
+# Deployment folder
+/deployment-ef/
+
 # rustfmt backups
 *.rs.bk
 

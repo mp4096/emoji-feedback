@@ -20,26 +20,22 @@ rustup target add arm-unknown-linux-gnueabihf
 sudo apt-get install gcc-arm-linux-gnueabihf
 ```
 
-Now build the binary:
+Now build the binary and prepare the deployment bundle:
 
 ```sh
-cargo build --release --target=arm-unknown-linux-gnueabihf
+make xcompile-arm
+make prepare-deployment-bundle
 ```
 
 Copy files to the Raspberry Pi:
 
-```
-mkdir ./target/deployment_ef
-cp ./target/arm-unknown-linux-gnueabihf/release/emoji-feedback ./target/deployment_ef
-cp ./examples/en.toml ./target/deployment_ef
-cp -r ./static/ ./target/deployment_ef
-
-scp -r ./target/deployment_ef pi@<Raspberry Pi's IP address>:
+```sh
+scp -r './deployment-ef' pi@<rpi ip address>:
 ```
 
 Finally, add the following lines to `/etc/rc.local` (`sudo vim /etc/rc.local`):
 
 ```sh
 export ROCKET_ENV=production
-cd /home/pi/deployment_ef && ./emoji-feedback en.toml
+cd /home/pi/deployment-ef && ./emoji-feedback en.toml
 ```
