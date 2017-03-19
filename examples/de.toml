@@ -1,0 +1,6 @@
+log_file = "./feedback.csv"
+cooldown_ms = 500
+
+[template_context]
+title = "Emoji-Feedback"
+question = "Wie war das Hausaufgabentutorium heute?"
