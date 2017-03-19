@@ -1,5 +1,11 @@
+@font-face {
+  font-family: 'Nunito';
+  src: url('static/assets/Nunito-Regular.ttf') format('truetype');
+}
+
 html, body {
   margin: auto;
+  font-family: 'Nunito', Fallback, sans-serif;
   width: 100%;
   height: 100%;
   display: flex;
