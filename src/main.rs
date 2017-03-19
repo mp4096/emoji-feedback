@@ -77,9 +77,13 @@ fn feedback(fb: &str, tmgs: State<Timings>, conf: State<Config>) -> Result<(), i
     }
 
     let fb_int = match fb {
-        "bad" => Ok(-1),
+        "so_very_negative" => Ok(-3),
+        "very_negative" => Ok(-2),
+        "negative" => Ok(-1),
         "neutral" => Ok(0),
-        "good" => Ok(1),
+        "positive" => Ok(1),
+        "very_positive" => Ok(2),
+        "so_very_positive" => Ok(3), // Yes! So. Very. Positive.
         _ => Err(io::Error::new(ErrorKind::InvalidInput, "invalid feedback value")),
     }?;
 
