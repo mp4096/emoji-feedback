@@ -37,5 +37,5 @@ Finally, add the following lines to `/etc/rc.local` (`sudo vim /etc/rc.local`):
 
 ```sh
 export ROCKET_ENV=production
-cd /home/pi/deployment-ef && ./emoji-feedback en.toml
+cd /home/pi/deployment-ef && ./emoji-feedback en.toml &
 ```
