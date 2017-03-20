@@ -10,3 +10,6 @@
 
 # Collected data
 *.csv
+
+# Generated auth data
+auth.toml
