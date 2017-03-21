@@ -59,6 +59,11 @@ fn index(conf: State<Config>) -> Template {
     Template::render("index", &conf.template_context)
 }
 
+#[get("/log_file")]
+fn log_file(conf: State<Config>) -> Option<NamedFile> {
+    NamedFile::open(&conf.log_file).ok()
+}
+
 #[get("/<file..>")]
 fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
@@ -119,7 +124,7 @@ fn main() {
             };
 
             rocket::ignite()
-                .mount("/", routes![index, files, feedback])
+                .mount("/", routes![index, files, log_file, feedback])
                 .manage(tmgs)
                 .manage(conf)
                 .launch();
