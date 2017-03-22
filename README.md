@@ -16,7 +16,7 @@
 First, install the cross-compilation toolchain:
 
 ```sh
-rustup target add arm-unknown-linux-gnueabihf
+rustup target add armv7-unknown-linux-gnueabihf
 sudo apt-get install gcc-arm-linux-gnueabihf
 ```
 
