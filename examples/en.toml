@@ -1,4 +1,5 @@
 log_file = "./feedback.csv"
+backup_file = "./feedback.bak"
 cooldown_ms = 500
 
 [template_context]

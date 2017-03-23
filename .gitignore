@@ -10,6 +10,7 @@
 
 # Collected data
 *.csv
+*.bak
 
 # Generated auth data
 auth.toml

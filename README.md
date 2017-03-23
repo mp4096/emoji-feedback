@@ -49,3 +49,10 @@ in a GET request to `/log_file/<token>`, e.g. for the example config files use:
 ```sh
 curl -X GET localhost:8000/log_file/9nmU49b8yqybNjUmkHDrPZNn
 ```
+
+You can reset the log file by sending a DELETE request to `/log_file/<token>`.
+The log file will be moved to the location specified as `backup_file` in the config file.
+
+```sh
+curl -X DELETE localhost:8000/log_file/9nmU49b8yqybNjUmkHDrPZNn
+```

@@ -31,6 +31,7 @@ struct Timings {
 #[derive(Deserialize)]
 struct Config {
     log_file: PathBuf,
+    backup_file: PathBuf,
     cooldown_ms: usize, // cooldown in milliseconds
     template_context: TemplateContext,
     auth: AuthData,
@@ -70,7 +71,7 @@ fn index(conf: State<Config>) -> Template {
 }
 
 #[get("/log_file/<token>")]
-fn log_file(token: &str, conf: State<Config>) -> Result<NamedFile, io::Error> {
+fn serve_log_file(token: &str, conf: State<Config>) -> Result<NamedFile, io::Error> {
     use auth_utils::check_access_token;
     use std::io::ErrorKind;
 
@@ -85,6 +86,19 @@ fn log_file(token: &str, conf: State<Config>) -> Result<NamedFile, io::Error> {
     // I warned you that this program is quick and dirty!
     if check_access_token(token, &conf.auth.salt, &conf.auth.hash) {
         NamedFile::open(&conf.log_file)
+    } else {
+        Err(io::Error::new(ErrorKind::PermissionDenied, "access token invalid"))
+    }
+}
+
+#[delete("/log_file/<token>")]
+fn reset_log_file(token: &str, conf: State<Config>) -> Result<(), io::Error> {
+    use auth_utils::check_access_token;
+    use std::fs;
+    use std::io::ErrorKind;
+
+    if check_access_token(token, &conf.auth.salt, &conf.auth.hash) {
+        fs::rename(&conf.log_file, &conf.backup_file)
     } else {
         Err(io::Error::new(ErrorKind::PermissionDenied, "access token invalid"))
     }
@@ -150,7 +164,7 @@ fn main() {
             };
 
             rocket::ignite()
-                .mount("/", routes![index, files, log_file, feedback])
+                .mount("/", routes![index, files, serve_log_file, reset_log_file, feedback])
                 .manage(tmgs)
                 .manage(conf)
                 .launch();
