@@ -64,7 +64,7 @@ fn log_file(conf: State<Config>) -> Option<NamedFile> {
     NamedFile::open(&conf.log_file).ok()
 }
 
-#[get("/<file..>")]
+#[get("/public/<file..>")]
 fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
 }
