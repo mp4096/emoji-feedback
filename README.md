@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/tum-rt/emoji-feedback.svg?branch=master)](https://travis-ci.org/tum-rt/emoji-feedback)
 
 ## Quickstart
-1. Install the latest Rust nightly (>= 2017-02-26)
+1. Install the latest Rust nightly (>= 2017-03-22)
 2. Clone the repo and `cd` into it
 3. `cargo run -- ./examples/en.toml`
 
