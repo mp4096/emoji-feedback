@@ -12,13 +12,13 @@ extern crate rustc_serialize;
 extern crate serde_derive;
 extern crate toml;
 
+mod auth_utils;
 mod file_utils;
 
 use chrono::{DateTime, Local};
 use rocket::response::NamedFile;
 use rocket::State;
 use rocket_contrib::Template;
-use rustc_serialize::base64::FromBase64Error;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicUsize;
@@ -69,26 +69,10 @@ fn index(conf: State<Config>) -> Template {
     Template::render("index", &conf.template_context)
 }
 
-fn salt_and_hash(salt: &str, token: &str) -> Result<Vec<u8>, FromBase64Error> {
-    use rustc_serialize::base64::FromBase64;
-    use blake2::{Blake2s, Digest};
-
-    let salt_bytes = salt.from_base64()?;
-    let token_bytes = token.from_base64()?;
-
-    let mut hasher = Blake2s::default();
-    hasher.input(&salt_bytes[..]);
-    hasher.input(&token_bytes[..]);
-
-    Ok(hasher.result().into_iter().collect())
-}
-
 #[get("/log_file/<token>")]
-fn log_file(token: &str, conf: State<Config>) -> Option<NamedFile> {
-    use rustc_serialize::base64::FromBase64;
-
-    let hash = salt_and_hash(&conf.auth.salt, token);
-    let should_be = conf.auth.hash.from_base64();
+fn log_file(token: &str, conf: State<Config>) -> Result<NamedFile, io::Error> {
+    use auth_utils::check_access_token;
+    use std::io::ErrorKind;
 
     // What can happen here:
     // * salt is invalid base64
@@ -99,9 +83,10 @@ fn log_file(token: &str, conf: State<Config>) -> Option<NamedFile> {
     // All these cases result in the same 404 response.
     //
     // I warned you that this program is quick and dirty!
-    match (hash, should_be) {
-        (Ok(ref h), Ok(ref s)) if &h[..] == &s[..] => NamedFile::open(&conf.log_file).ok(),
-        _ => None,
+    if check_access_token(token, &conf.auth.salt, &conf.auth.hash) {
+        NamedFile::open(&conf.log_file)
+    } else {
+        Err(io::Error::new(ErrorKind::PermissionDenied, "access token invalid"))
     }
 }
 
