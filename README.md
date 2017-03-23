@@ -47,5 +47,5 @@ Add the `auth.toml` snippet to the configuration file and use the token
 in a GET request to `/log_file/<token>`, e.g. for the example config files use:
 
 ```sh
-curl -X GET localhost:8000/log_file/aHUzHnGfIKw-3-v4s7Mj9PWQ
+curl -X GET localhost:8000/log_file/9nmU49b8yqybNjUmkHDrPZNn
 ```

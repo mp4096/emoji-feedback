@@ -18,6 +18,7 @@ use chrono::{DateTime, Local};
 use rocket::response::NamedFile;
 use rocket::State;
 use rocket_contrib::Template;
+use rustc_serialize::base64::FromBase64Error;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicUsize;
@@ -68,28 +69,38 @@ fn index(conf: State<Config>) -> Template {
     Template::render("index", &conf.template_context)
 }
 
-#[get("/log_file/<token>")]
-fn log_file(token: &str, conf: State<Config>) -> Option<NamedFile> {
+fn salt_and_hash(salt: &str, token: &str) -> Result<Vec<u8>, FromBase64Error> {
     use rustc_serialize::base64::FromBase64;
     use blake2::{Blake2s, Digest};
 
-    let salted_token = format!("{}{}", conf.auth.salt, token);
+    let salt_bytes = salt.from_base64()?;
+    let token_bytes = token.from_base64()?;
 
     let mut hasher = Blake2s::default();
-    hasher.input(salted_token.as_bytes());
+    hasher.input(&salt_bytes[..]);
+    hasher.input(&token_bytes[..]);
 
-    let hash = hasher.result();
+    Ok(hasher.result().into_iter().collect())
+}
+
+#[get("/log_file/<token>")]
+fn log_file(token: &str, conf: State<Config>) -> Option<NamedFile> {
+    use rustc_serialize::base64::FromBase64;
+
+    let hash = salt_and_hash(&conf.auth.salt, token);
     let should_be = conf.auth.hash.from_base64();
 
     // What can happen here:
-    // * "auth.hash" value in the config file is invalid base64
+    // * salt is invalid base64
+    // * access token is invalid base64
+    // * hash value in the config file is invalid base64
     // * there is no log file (yet)
-    // * access token is invalid
-    // All these three cases result in the same 404 response.
+    // * access token is unacceptable
+    // All these cases result in the same 404 response.
     //
     // I warned you that this program is quick and dirty!
     match (hash, should_be) {
-        (h, Ok(ref s)) if &h[..] == &s[..] => NamedFile::open(&conf.log_file).ok(),
+        (Ok(ref h), Ok(ref s)) if &h[..] == &s[..] => NamedFile::open(&conf.log_file).ok(),
         _ => None,
     }
 }
