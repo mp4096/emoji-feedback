@@ -1,11 +1,13 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
+extern crate blake2;
 extern crate chrono;
 #[macro_use]
 extern crate clap;
 extern crate rocket_contrib;
 extern crate rocket;
+extern crate rustc_serialize;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
@@ -30,6 +32,13 @@ struct Config {
     log_file: PathBuf,
     cooldown_ms: usize, // cooldown in milliseconds
     template_context: TemplateContext,
+    auth: AuthData,
+}
+
+#[derive(Deserialize)]
+struct AuthData {
+    salt: String,
+    hash: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -59,9 +68,30 @@ fn index(conf: State<Config>) -> Template {
     Template::render("index", &conf.template_context)
 }
 
-#[get("/log_file")]
-fn log_file(conf: State<Config>) -> Option<NamedFile> {
-    NamedFile::open(&conf.log_file).ok()
+#[get("/log_file/<token>")]
+fn log_file(token: &str, conf: State<Config>) -> Option<NamedFile> {
+    use rustc_serialize::base64::FromBase64;
+    use blake2::{Blake2s, Digest};
+
+    let salted_token = format!("{}{}", conf.auth.salt, token);
+
+    let mut hasher = Blake2s::default();
+    hasher.input(salted_token.as_bytes());
+
+    let hash = hasher.result();
+    let should_be = conf.auth.hash.from_base64();
+
+    // What can happen here:
+    // * "auth.hash" value in the config file is invalid base64
+    // * there is no log file (yet)
+    // * access token is invalid
+    // All these three cases result in the same 404 response.
+    //
+    // I warned you that this program is quick and dirty!
+    match (hash, should_be) {
+        (h, Ok(ref s)) if &h[..] == &s[..] => NamedFile::open(&conf.log_file).ok(),
+        _ => None,
+    }
 }
 
 #[get("/public/<file..>")]

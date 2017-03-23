@@ -39,3 +39,13 @@ Finally, add the following lines to `/etc/rc.local` (`sudo vim /etc/rc.local`):
 export ROCKET_ENV=production
 cd /home/pi/deployment-ef && ./emoji-feedback en.toml &
 ```
+
+## Remotely accessing the log file
+
+You have to generate an access token with `python generate_auth.py`.
+Add the `auth.toml` snippet to the configuration file and use the token
+in a GET request to `/log_file/<token>`, e.g. for the example config files use:
+
+```sh
+curl -X GET localhost:8000/log_file/aHUzHnGfIKw-3-v4s7Mj9PWQ
+```

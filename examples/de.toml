@@ -4,3 +4,7 @@ cooldown_ms = 500
 [template_context]
 title = "Emoji-Feedback"
 question = "Wie war das Hausaufgabentutorium heute?"
+
+[auth]
+salt="N-Jg5pEZGGX34hC5xb41jjGf"
+hash="tL_q8eImyKh5i9umTmK0TCJeu4Sz56yBlFLVr_7ftyQ="
