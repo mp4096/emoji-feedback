@@ -164,7 +164,8 @@ fn main() {
             };
 
             rocket::ignite()
-                .mount("/", routes![index, files, serve_log_file, reset_log_file, feedback])
+                .mount("/",
+                       routes![index, files, serve_log_file, reset_log_file, feedback])
                 .manage(tmgs)
                 .manage(conf)
                 .launch();
