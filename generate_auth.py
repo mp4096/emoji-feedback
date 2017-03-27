@@ -1,6 +1,6 @@
 from base64 import urlsafe_b64encode
 from hashlib import blake2s
-from secrets import token_bytes
+from secrets import token_bytes  # requires Python 3.6
 
 SALT_SIZE = 18
 TOKEN_SIZE = 18
@@ -14,7 +14,8 @@ if __name__ == "__main__":
     # We don't use blake2s's native salt handling here since it's not
     # implemented by Rust's blake2 crate
     h = blake2s()
-    h.update(salt + token)
+    h.update(salt)
+    h.update(token)
     digest = h.digest()
 
     # Write the token to a file

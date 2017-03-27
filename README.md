@@ -8,7 +8,8 @@
 3. `cargo run -- ./examples/en.toml`
 
 ## Disclaimer
-* Only modern browsers (Chromium on Linux, Chrome on Android) are supported (Fetch API required).
+* Only modern browsers (Chromium >= 42 on Linux, Chrome >= 42 on Android)
+  are supported (Fetch API required).
 * This software is undocumented, untested and unsecure. :construction: :boom: Use at your own risk.
 
 
@@ -42,7 +43,7 @@ cd /home/pi/deployment-ef && ./emoji-feedback en.toml &
 
 ## Remotely accessing the log file
 
-You have to generate an access token with `python generate_auth.py`.
+You have to generate an access token with `python generate_auth.py` (you will need Python >= 3.6).
 Add the `auth.toml` snippet to the configuration file and use the token
 in a GET request to `/log_file/<token>`, e.g. for the example config files use:
 
