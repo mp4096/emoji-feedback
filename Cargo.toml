@@ -11,15 +11,15 @@ publish = false
 [dependencies]
 blake2 = "^0.5.0"
 chrono = "^0.3.0"
-clap = "^2.21.1"
-rocket = "^0.2.4"
-rocket_codegen = "^0.2.4"
+clap = "^2.23.3"
+rocket = "^0.2.6"
+rocket_codegen = "^0.2.6"
 rustc-serialize = "^0.3.23"
 serde = "^0.9.11"
 serde_derive = "^0.9.11"
 toml = "^0.3.1"
 
 [dependencies.rocket_contrib]
-version = "^0.2.4"
+version = "^0.2.6"
 default-features = false
 features = ["handlebars_templates"]
