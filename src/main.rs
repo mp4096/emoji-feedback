@@ -5,9 +5,9 @@ extern crate blake2;
 extern crate chrono;
 #[macro_use]
 extern crate clap;
+extern crate data_encoding;
 extern crate rocket_contrib;
 extern crate rocket;
-extern crate rustc_serialize;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;

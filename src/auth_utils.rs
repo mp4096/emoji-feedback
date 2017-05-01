@@ -1,10 +1,8 @@
-use rustc_serialize::base64::FromBase64Error;
+use data_encoding::{BASE64URL, DecodeError};
 
 pub fn check_access_token<T: AsRef<str>>(token: T, salt: T, hash: T) -> bool {
-    use rustc_serialize::base64::FromBase64;
-
     let hashed_token = salt_and_hash(salt, token);
-    let should_be = hash.as_ref().from_base64();
+    let should_be = BASE64URL.decode(hash.as_ref().as_bytes());
 
     match (hashed_token, should_be) {
         (Ok(ref a), Ok(ref b)) if &a[..] == &b[..] => true,
@@ -12,12 +10,11 @@ pub fn check_access_token<T: AsRef<str>>(token: T, salt: T, hash: T) -> bool {
     }
 }
 
-fn salt_and_hash<T: AsRef<str>>(salt: T, token: T) -> Result<Vec<u8>, FromBase64Error> {
-    use rustc_serialize::base64::FromBase64;
+fn salt_and_hash<T: AsRef<str>>(salt: T, token: T) -> Result<Vec<u8>, DecodeError> {
     use blake2::{Blake2s, Digest};
 
-    let salt_bytes = salt.as_ref().from_base64()?;
-    let token_bytes = token.as_ref().from_base64()?;
+    let salt_bytes = BASE64URL.decode(salt.as_ref().as_bytes())?;
+    let token_bytes = BASE64URL.decode(token.as_ref().as_bytes())?;
 
     let mut hasher = Blake2s::default();
     hasher.input(&salt_bytes[..]);
