@@ -7,16 +7,16 @@ html, body {
   margin: auto;
   font-family: 'Nunito', Fallback, sans-serif;
   width: 100%;
-  height: 50%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: white;
 }
 
 .eq-container {
   margin: auto;
-  margin-top: 5%;
   width: 90%;
   display: flex;
   justify-content: space-between;
