@@ -1,4 +1,14 @@
+document.querySelectorAll(".emoji-button").forEach(function (button) {
+  button.addEventListener("webkitAnimationEnd", function() {
+    // reset animation
+    button.style.animationName = "";
+  });
+});
+
 function post_feedback(fb) {
+  var button = document.querySelector(".emoji-button." + fb);
+  button.style.animationName = "pop";
+
   fetch("/feedback/" + fb, {method: "POST"}).catch(console.log);
 }
 
