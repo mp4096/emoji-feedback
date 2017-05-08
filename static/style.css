@@ -38,3 +38,29 @@ html, body {
 .emoji-button:active {
   transform:scale(1.3);
 }
+
+#fullscreen {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-image: url('assets/fullscreen-on.svg');
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  border: none;
+  width: 30px;
+  height: 30px;
+  outline: none;
+}
+
+:fullscreen #fullscreen {
+  background-image: url('assets/fullscreen-off.svg') !important;
+}
+
+:-webkit-full-screen #fullscreen {
+  background-image: url('assets/fullscreen-off.svg') !important;
+}
+
+:-moz-full-screen #fullscreen {
+  background-image: url('assets/fullscreen-off.svg') !important;
+}
