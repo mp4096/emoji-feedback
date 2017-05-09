@@ -47,6 +47,7 @@ struct AuthData {
 struct TemplateContext {
     title: String,
     question: String,
+    thanks: String,
 }
 
 fn load_config_file<T>(path: T) -> Result<Config, io::Error>
