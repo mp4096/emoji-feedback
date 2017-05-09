@@ -1,9 +1,11 @@
-document.querySelectorAll(".emoji-button").forEach(function (button) {
+const buttons = document.querySelectorAll(".emoji-button");
+for(var i = 0; i < buttons.length; i++) {
+  const button = buttons[i];
   button.addEventListener("webkitAnimationEnd", function() {
     // reset animation
     button.style.animationName = "";
   });
-});
+}
 
 const thanksEl = document.querySelector("#thanks");
 thanksEl.addEventListener("webkitAnimationEnd", function() {
