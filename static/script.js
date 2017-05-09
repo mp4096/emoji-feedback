@@ -1,9 +1,8 @@
 const buttons = document.querySelectorAll(".emoji-button");
 for(var i = 0; i < buttons.length; i++) {
-  const button = buttons[i];
-  button.addEventListener("webkitAnimationEnd", function() {
+  buttons[i].addEventListener("webkitAnimationEnd", function() {
     // reset animation
-    button.style.animationName = "";
+    this.style.animationName = "";
   });
 }
 
