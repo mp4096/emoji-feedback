@@ -34,6 +34,7 @@ html, body {
   height: 100%;
   animation-duration: 0.4s;
   animation-timing-function: ease;
+  will-change: transform;
 }
 
 @keyframes pop {
@@ -84,7 +85,7 @@ html, body {
     opacity: 1;
   }
   100% {
-    transform: scale(10) translate(0, -100%);
+    transform: scale(10) translate(0, -30px);
     opacity: 0;
   }
 }
@@ -101,4 +102,5 @@ html, body {
   animation-duration: 0.5s;
   animation-timing-function: ease-in;
   opacity: 0;
+  will-change: transform;
 }
