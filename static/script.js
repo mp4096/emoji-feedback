@@ -15,8 +15,10 @@ function post_feedback(fb) {
   var button = document.querySelector(".emoji-button." + fb);
   button.style.animationName = "pop";
 
-  fetch("/feedback/" + fb, {method: "POST"}).then(function() {
-    thanksEl.style.animationName = "woof";
+  fetch("/feedback/" + fb, {method: "POST"}).then(function(response) {
+    if (response.ok) {
+      thanksEl.style.animationName = "woof";
+    }
   }).catch(console.log);
 }
 
