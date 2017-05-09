@@ -5,6 +5,7 @@ cooldown_ms = 500
 [template_context]
 title = "Emoji feedback"
 question = "How was your exercise today?"
+thanks = "Thanks!"
 
 [auth]
 salt="subbh07uv0flGTz_C5lC6lag"
