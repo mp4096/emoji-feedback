@@ -12,8 +12,8 @@ thanksEl.addEventListener("webkitAnimationEnd", function() {
   thanksEl.style.animationName = "";
 });
 
-function post_feedback(fb) {
-  var button = document.querySelector(".emoji-button." + fb);
+function postFeedback(fb) {
+  const button = document.querySelector(".emoji-button." + fb);
   button.style.animationName = "pop";
 
   fetch("/feedback/" + fb, {method: "POST"}).then(function(response) {
@@ -23,13 +23,13 @@ function post_feedback(fb) {
   }).catch(console.log);
 }
 
-function is_fullscreen() {
+function isFullscreen() {
   return document.fullscreenElement || // standards-compliant browsers
     document.webkitFullscreenElement || // Chrome, Opera, Edge, Safari
     document.mozFullScreenElement; // Firefox
 }
 
-function exit_fullscreen() {
+function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen(); // standards-compliant browsers
   } else if (document.webkitExitFullscreen) {
@@ -39,8 +39,8 @@ function exit_fullscreen() {
   }
 }
 
-function request_fullscreen() {
-  var el = document.body;
+function requestFullscreen() {
+  const el = document.body;
 
   if (el.requestFullscreen) {
     el.requestFullscreen(); // standards-compliant browsers
@@ -51,10 +51,10 @@ function request_fullscreen() {
   }
 }
 
-function toggle_fullscreen() {
-  if (is_fullscreen()) {
-    exit_fullscreen();
+function toggleFullscreen() {
+  if (isFullscreen()) {
+    exitFullscreen();
   } else {
-    request_fullscreen();
+    requestFullscreen();
   }
 }
