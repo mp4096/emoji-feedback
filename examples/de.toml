@@ -6,6 +6,7 @@ cooldown_ms = 500
 title = "Emoji-Feedback"
 question = "Wie war das Hausaufgabentutorium heute?"
 thanks = "Danke!"
+acks = "Emoji icons supplied by EmojiOne. Fullscreen icon made by Freepik from www.flaticon.com. Thank you!"
 
 [auth]
 salt="subbh07uv0flGTz_C5lC6lag"
