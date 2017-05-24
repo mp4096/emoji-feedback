@@ -5,7 +5,7 @@ pub fn check_access_token<T: AsRef<str>>(token: T, salt: T, hash: T) -> bool {
     let should_be = BASE64URL.decode(hash.as_ref().as_bytes());
 
     match (hashed_token, should_be) {
-        (Ok(ref a), Ok(ref b)) if &a[..] == &b[..] => true,
+        (Ok(ref a), Ok(ref b)) if a[..] == b[..] => true,
         _ => false,
     }
 }
