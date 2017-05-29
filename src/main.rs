@@ -74,7 +74,7 @@ fn index(conf: State<Config>) -> Template {
 }
 
 #[get("/log_file/<token>")]
-fn serve_log_file(token: &str, conf: State<Config>) -> Result<NamedFile, io::Error> {
+fn serve_log_file(token: String, conf: State<Config>) -> Result<NamedFile, io::Error> {
     use auth_utils::check_access_token;
     use std::io::ErrorKind;
 
@@ -87,7 +87,7 @@ fn serve_log_file(token: &str, conf: State<Config>) -> Result<NamedFile, io::Err
     // All these cases result in the same 404 response.
     //
     // I warned you that this program is quick and dirty!
-    if check_access_token(token, &conf.auth.salt, &conf.auth.hash) {
+    if check_access_token(&token, &conf.auth.salt, &conf.auth.hash) {
         NamedFile::open(&conf.log_file)
     } else {
         Err(io::Error::new(ErrorKind::PermissionDenied, "access token invalid"))
@@ -95,12 +95,12 @@ fn serve_log_file(token: &str, conf: State<Config>) -> Result<NamedFile, io::Err
 }
 
 #[delete("/log_file/<token>")]
-fn reset_log_file(token: &str, conf: State<Config>) -> Result<(), io::Error> {
+fn reset_log_file(token: String, conf: State<Config>) -> Result<(), io::Error> {
     use auth_utils::check_access_token;
     use std::fs;
     use std::io::ErrorKind;
 
-    if check_access_token(token, &conf.auth.salt, &conf.auth.hash) {
+    if check_access_token(&token, &conf.auth.salt, &conf.auth.hash) {
         fs::rename(&conf.log_file, &conf.backup_file)
     } else {
         Err(io::Error::new(ErrorKind::PermissionDenied, "access token invalid"))
@@ -113,7 +113,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 }
 
 #[post("/feedback/<fb>")]
-fn feedback(fb: &str, tmgs: State<Timings>, conf: State<Config>) -> Result<(), io::Error> {
+fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(), io::Error> {
     use file_utils::append_line_to_file;
     use std::io::ErrorKind;
     use std::sync::atomic::Ordering;
@@ -126,7 +126,7 @@ fn feedback(fb: &str, tmgs: State<Timings>, conf: State<Config>) -> Result<(), i
         return Err(io::Error::new(ErrorKind::Other, "button mashing detected"));
     }
 
-    let fb_int = match fb {
+    let fb_int = match fb.as_ref() {
         "so_very_negative" => Ok(-3),
         "very_negative" => Ok(-2),
         "negative" => Ok(-1),
@@ -171,6 +171,7 @@ fn main() {
                        routes![index, files, serve_log_file, reset_log_file, feedback])
                 .manage(tmgs)
                 .manage(conf)
+                .attach(Template::fairing())
                 .launch();
         }
         Err(e) => {

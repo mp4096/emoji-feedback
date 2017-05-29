@@ -9,18 +9,25 @@ keywords = ["feedback"]
 publish = false
 
 [dependencies]
-blake2 = "^0.5.1"
+blake2 = "^0.5.2"
 chrono = "^0.3.1"
-clap = "^2.24.0"
+clap = "^2.24.2"
 constant_time_eq = "^0.1.2"
 data-encoding = "2.0.0-rc.1"
-rocket = "^0.2.6"
-rocket_codegen = "^0.2.6"
-serde = "^0.9.15"
-serde_derive = "^0.9.15"
-toml = "^0.3.2"
+serde = "^1.0.8"
+serde_derive = "^1.0.8"
+toml = "^0.4.1"
+
+[dependencies.rocket]
+git = "https://github.com/SergioBenitez/Rocket"
+rev = "a4292ba666fa60448e575b600d69f131795da080"
+
+[dependencies.rocket_codegen]
+git = "https://github.com/SergioBenitez/Rocket"
+rev = "a4292ba666fa60448e575b600d69f131795da080"
 
 [dependencies.rocket_contrib]
-version = "^0.2.6"
+git = "https://github.com/SergioBenitez/Rocket"
+rev = "a4292ba666fa60448e575b600d69f131795da080"
 default-features = false
 features = ["handlebars_templates"]
