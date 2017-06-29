@@ -10,24 +10,24 @@ publish = false
 
 [dependencies]
 blake2 = "^0.6.0"
-chrono = "^0.3.1"
-clap = "^2.24.2"
+chrono = "^0.4.0"
+clap = "^2.25.0"
 constant_time_eq = "^0.1.2"
 data-encoding = "2.0.0-rc.1"
 serde = "^1.0.8"
 serde_derive = "^1.0.8"
-toml = "^0.4.1"
+toml = "^0.4.2"
 
 [dependencies.rocket]
 git = "https://github.com/SergioBenitez/Rocket"
-rev = "3fcf6c43dc13e459b4e3198c82f4e871508a4182"
+rev = "ef4c2fd989ed993e64a5a113e2559a85739dbd86"
 
 [dependencies.rocket_codegen]
 git = "https://github.com/SergioBenitez/Rocket"
-rev = "3fcf6c43dc13e459b4e3198c82f4e871508a4182"
+rev = "ef4c2fd989ed993e64a5a113e2559a85739dbd86"
 
 [dependencies.rocket_contrib]
 git = "https://github.com/SergioBenitez/Rocket"
-rev = "3fcf6c43dc13e459b4e3198c82f4e871508a4182"
+rev = "ef4c2fd989ed993e64a5a113e2559a85739dbd86"
 default-features = false
 features = ["handlebars_templates"]
