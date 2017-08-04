@@ -9,16 +9,16 @@ keywords = ["feedback"]
 publish = false
 
 [dependencies]
-blake2 = "^0.6.0"
+blake2 = "^0.6.1"
 chrono = "^0.4.0"
-clap = "^2.25.0"
+clap = "^2.26.0"
 constant_time_eq = "^0.1.2"
 data-encoding = "2.0.0-rc.1"
 rocket = "^0.3.0"
 rocket_codegen = "^0.3.0"
-serde = "^1.0.10"
-serde_derive = "^1.0.10"
-toml = "^0.4.2"
+serde = "^1.0.11"
+serde_derive = "^1.0.11"
+toml = "^0.4.4"
 
 [dependencies.rocket_contrib]
 version = "^0.3.0"
