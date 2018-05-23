@@ -7,8 +7,8 @@ extern crate chrono;
 extern crate clap;
 extern crate constant_time_eq;
 extern crate data_encoding;
-extern crate rocket_contrib;
 extern crate rocket;
+extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
@@ -53,7 +53,8 @@ struct TemplateContext {
 }
 
 fn load_config_file<T>(path: T) -> Result<Config, io::Error>
-    where T: AsRef<Path>
+where
+    T: AsRef<Path>,
 {
     use file_utils::read_file;
     use std::io::ErrorKind;
@@ -90,7 +91,10 @@ fn serve_log_file(token: String, conf: State<Config>) -> Result<NamedFile, io::E
     if check_access_token(&token, &conf.auth.salt, &conf.auth.hash) {
         NamedFile::open(&conf.log_file)
     } else {
-        Err(io::Error::new(ErrorKind::PermissionDenied, "access token invalid"))
+        Err(io::Error::new(
+            ErrorKind::PermissionDenied,
+            "access token invalid",
+        ))
     }
 }
 
@@ -103,7 +107,10 @@ fn reset_log_file(token: String, conf: State<Config>) -> Result<(), io::Error> {
     if check_access_token(&token, &conf.auth.salt, &conf.auth.hash) {
         fs::rename(&conf.log_file, &conf.backup_file)
     } else {
-        Err(io::Error::new(ErrorKind::PermissionDenied, "access token invalid"))
+        Err(io::Error::new(
+            ErrorKind::PermissionDenied,
+            "access token invalid",
+        ))
     }
 }
 
@@ -120,7 +127,8 @@ fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(),
 
     let curr_timestamp = count_ms_from_datetime(tmgs.launch_time);
     let ms_since_last = curr_timestamp - tmgs.last_ms_from_launch.load(Ordering::Relaxed);
-    tmgs.last_ms_from_launch.store(curr_timestamp, Ordering::Relaxed);
+    tmgs.last_ms_from_launch
+        .store(curr_timestamp, Ordering::Relaxed);
 
     if ms_since_last < conf.cooldown_ms {
         return Err(io::Error::new(ErrorKind::Other, "button mashing detected"));
@@ -134,7 +142,10 @@ fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(),
         "positive" => Ok(1),
         "very_positive" => Ok(2),
         "so_very_positive" => Ok(3), // Yes! So. Very. Positive.
-        _ => Err(io::Error::new(ErrorKind::InvalidInput, "invalid feedback value")),
+        _ => Err(io::Error::new(
+            ErrorKind::InvalidInput,
+            "invalid feedback value",
+        )),
     }?;
 
     let line = format!("{},{:>2}", Local::now().to_rfc3339(), fb_int);
@@ -151,10 +162,12 @@ fn main() {
         .version(crate_version!())
         .author(crate_authors!())
         .about("Emoji feedback server")
-        .arg(Arg::with_name("config_file_path")
-            .help("Path to the config file")
-            .index(1)
-            .required(true))
+        .arg(
+            Arg::with_name("config_file_path")
+                .help("Path to the config file")
+                .index(1)
+                .required(true),
+        )
         .get_matches();
 
     let config_file_path = Path::new(m.value_of("config_file_path").unwrap());
@@ -167,8 +180,10 @@ fn main() {
             };
 
             rocket::ignite()
-                .mount("/",
-                       routes![index, files, serve_log_file, reset_log_file, feedback])
+                .mount(
+                    "/",
+                    routes![index, files, serve_log_file, reset_log_file, feedback],
+                )
                 .manage(tmgs)
                 .manage(conf)
                 .attach(Template::fairing())

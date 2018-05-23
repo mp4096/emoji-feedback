@@ -1,15 +1,16 @@
-use std::path::Path;
 use std::io::Error;
-
+use std::path::Path;
 
 pub fn append_line_to_file<T, U>(path: T, data: U) -> Result<(), Error>
-    where T: AsRef<Path>,
-          U: AsRef<str>
+where
+    T: AsRef<Path>,
+    U: AsRef<str>,
 {
     use std::fs::OpenOptions;
     use std::io::{BufWriter, Write};
 
-    let file = OpenOptions::new().write(true)
+    let file = OpenOptions::new()
+        .write(true)
         .append(true)
         .create(true)
         .open(path.as_ref())?;
@@ -22,7 +23,8 @@ pub fn append_line_to_file<T, U>(path: T, data: U) -> Result<(), Error>
 }
 
 pub fn read_file<T>(path: T) -> Result<String, Error>
-    where T: AsRef<Path>
+where
+    T: AsRef<Path>,
 {
     use std::fs::File;
     use std::io::{BufReader, Read};
