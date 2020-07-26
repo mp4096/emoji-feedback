@@ -6,10 +6,7 @@ pub fn check_access_token<T: AsRef<str>>(token: T, salt: T, hash: T) -> bool {
     let hashed_token = salt_and_hash(salt, token);
     let should_be = BASE64URL.decode(hash.as_ref().as_bytes());
 
-    match (hashed_token, should_be) {
-        (Ok(ref a), Ok(ref b)) if constant_time_eq(a, b) => true,
-        _ => false,
-    }
+    matches!((hashed_token, should_be), (Ok(ref a), Ok(ref b)) if constant_time_eq(a, b))
 }
 
 fn salt_and_hash<T: AsRef<str>>(salt: T, token: T) -> Result<Vec<u8>, DecodeError> {

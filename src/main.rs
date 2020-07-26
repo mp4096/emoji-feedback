@@ -10,7 +10,6 @@ extern crate serde_derive;
 mod auth_utils;
 mod file_utils;
 
-use chrono::{DateTime, Local};
 use rocket::response::NamedFile;
 use rocket::State;
 use rocket_contrib::templates::Template;
@@ -19,7 +18,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicUsize;
 
 struct Timings {
-    launch_time: DateTime<Local>,
+    launch_time: chrono::DateTime<chrono::Local>,
     last_ms_from_launch: AtomicUsize, // milliseconds from the launch time
 }
 
@@ -59,8 +58,10 @@ where
 }
 
 #[inline]
-fn count_ms_from_datetime(dt0: DateTime<Local>) -> usize {
-    Local::now().signed_duration_since(dt0).num_milliseconds() as usize
+fn count_ms_from_datetime(dt0: chrono::DateTime<chrono::Local>) -> usize {
+    chrono::Local::now()
+        .signed_duration_since(dt0)
+        .num_milliseconds() as usize
 }
 
 #[get("/")]
@@ -142,7 +143,7 @@ fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(),
         )),
     }?;
 
-    let line = format!("{},{:>2}", Local::now().to_rfc3339(), fb_int);
+    let line = format!("{},{:>2}", chrono::Local::now().to_rfc3339(), fb_int);
     append_line_to_file(&conf.log_file, line)?;
 
     Ok(())
@@ -169,7 +170,7 @@ fn main() {
     match load_config_file(&config_file_path) {
         Ok(conf) => {
             let tmgs = Timings {
-                launch_time: Local::now(),
+                launch_time: chrono::Local::now(),
                 last_ms_from_launch: AtomicUsize::new(0),
             };
 
