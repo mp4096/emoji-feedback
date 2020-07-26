@@ -1,6 +1,6 @@
 # Emoji feedback
 
-[![Build Status](https://travis-ci.org/tum-rt/emoji-feedback.svg?branch=master)](https://travis-ci.org/tum-rt/emoji-feedback)
+[![Build Status](https://travis-ci.org/mp4096/emoji-feedback.svg?branch=master)](https://travis-ci.org/mp4096/emoji-feedback)
 
 ## Quickstart
 1. Install the latest Rust nightly
