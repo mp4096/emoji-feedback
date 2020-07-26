@@ -1,17 +1,11 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-extern crate blake2;
-extern crate chrono;
 #[macro_use]
 extern crate clap;
-extern crate constant_time_eq;
-extern crate data_encoding;
 #[macro_use]
 extern crate rocket;
-extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
-extern crate toml;
 
 mod auth_utils;
 mod file_utils;
