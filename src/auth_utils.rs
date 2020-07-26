@@ -19,8 +19,8 @@ fn salt_and_hash<T: AsRef<str>>(salt: T, token: T) -> Result<Vec<u8>, DecodeErro
     let token_bytes = BASE64URL.decode(token.as_ref().as_bytes())?;
 
     let mut hasher = Blake2s::default();
-    hasher.input(&salt_bytes[..]);
-    hasher.input(&token_bytes[..]);
+    hasher.update(&salt_bytes[..]);
+    hasher.update(&token_bytes[..]);
 
-    Ok(hasher.result().into_iter().collect())
+    Ok(hasher.finalize().into_iter().collect())
 }
