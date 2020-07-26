@@ -1,4 +1,4 @@
-use data_encoding::{BASE64URL, DecodeError};
+use data_encoding::{DecodeError, BASE64URL};
 
 pub fn check_access_token<T: AsRef<str>>(token: T, salt: T, hash: T) -> bool {
     use constant_time_eq::constant_time_eq;

@@ -1,5 +1,4 @@
-#![feature(plugin)]
-#![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
 extern crate blake2;
 extern crate chrono;
@@ -7,6 +6,7 @@ extern crate chrono;
 extern crate clap;
 extern crate constant_time_eq;
 extern crate data_encoding;
+#[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
@@ -19,7 +19,7 @@ mod file_utils;
 use chrono::{DateTime, Local};
 use rocket::response::NamedFile;
 use rocket::State;
-use rocket_contrib::Template;
+use rocket_contrib::templates::Template;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicUsize;
