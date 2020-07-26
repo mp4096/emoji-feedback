@@ -12,14 +12,11 @@ mod file_utils;
 
 use rocket::response::NamedFile;
 use rocket::State;
-use rocket_contrib::templates::Template;
-use std::io;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::AtomicUsize;
 
 struct Timings {
     launch_time: chrono::DateTime<chrono::Local>,
-    last_ms_from_launch: AtomicUsize, // milliseconds from the launch time
+    last_ms_from_launch: std::sync::atomic::AtomicUsize, // milliseconds from the launch time
 }
 
 #[derive(Deserialize)]
@@ -45,7 +42,7 @@ struct TemplateContext {
     acks: String,
 }
 
-fn load_config_file<T>(path: T) -> Result<Config, io::Error>
+fn load_config_file<T>(path: T) -> Result<Config, std::io::Error>
 where
     T: AsRef<Path>,
 {
@@ -54,7 +51,7 @@ where
 
     let toml_str = read_file(path.as_ref())?;
     toml::from_str(&toml_str)
-        .map_err(|_| io::Error::new(ErrorKind::InvalidInput, "Could not parse TOML file"))
+        .map_err(|_| std::io::Error::new(ErrorKind::InvalidInput, "Could not parse TOML file"))
 }
 
 #[inline]
@@ -65,12 +62,12 @@ fn count_ms_from_datetime(dt0: chrono::DateTime<chrono::Local>) -> usize {
 }
 
 #[get("/")]
-fn index(conf: State<Config>) -> Template {
-    Template::render("index", &conf.template_context)
+fn index(conf: State<Config>) -> rocket_contrib::templates::Template {
+    rocket_contrib::templates::Template::render("index", &conf.template_context)
 }
 
 #[get("/log_file/<token>")]
-fn serve_log_file(token: String, conf: State<Config>) -> Result<NamedFile, io::Error> {
+fn serve_log_file(token: String, conf: State<Config>) -> Result<NamedFile, std::io::Error> {
     use auth_utils::check_access_token;
     use std::io::ErrorKind;
 
@@ -86,7 +83,7 @@ fn serve_log_file(token: String, conf: State<Config>) -> Result<NamedFile, io::E
     if check_access_token(&token, &conf.auth.salt, &conf.auth.hash) {
         NamedFile::open(&conf.log_file)
     } else {
-        Err(io::Error::new(
+        Err(std::io::Error::new(
             ErrorKind::PermissionDenied,
             "access token invalid",
         ))
@@ -94,7 +91,7 @@ fn serve_log_file(token: String, conf: State<Config>) -> Result<NamedFile, io::E
 }
 
 #[delete("/log_file/<token>")]
-fn reset_log_file(token: String, conf: State<Config>) -> Result<(), io::Error> {
+fn reset_log_file(token: String, conf: State<Config>) -> Result<(), std::io::Error> {
     use auth_utils::check_access_token;
     use std::fs;
     use std::io::ErrorKind;
@@ -102,7 +99,7 @@ fn reset_log_file(token: String, conf: State<Config>) -> Result<(), io::Error> {
     if check_access_token(&token, &conf.auth.salt, &conf.auth.hash) {
         fs::rename(&conf.log_file, &conf.backup_file)
     } else {
-        Err(io::Error::new(
+        Err(std::io::Error::new(
             ErrorKind::PermissionDenied,
             "access token invalid",
         ))
@@ -115,7 +112,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 }
 
 #[post("/feedback/<fb>")]
-fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(), io::Error> {
+fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(), std::io::Error> {
     use file_utils::append_line_to_file;
     use std::io::ErrorKind;
     use std::sync::atomic::Ordering;
@@ -126,7 +123,10 @@ fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(),
         .store(curr_timestamp, Ordering::Relaxed);
 
     if ms_since_last < conf.cooldown_ms {
-        return Err(io::Error::new(ErrorKind::Other, "button mashing detected"));
+        return Err(std::io::Error::new(
+            ErrorKind::Other,
+            "button mashing detected",
+        ));
     }
 
     let fb_int = match fb.as_ref() {
@@ -137,7 +137,7 @@ fn feedback(fb: String, tmgs: State<Timings>, conf: State<Config>) -> Result<(),
         "positive" => Ok(1),
         "very_positive" => Ok(2),
         "so_very_positive" => Ok(3), // Yes! So. Very. Positive.
-        _ => Err(io::Error::new(
+        _ => Err(std::io::Error::new(
             ErrorKind::InvalidInput,
             "invalid feedback value",
         )),
@@ -171,7 +171,7 @@ fn main() {
         Ok(conf) => {
             let tmgs = Timings {
                 launch_time: chrono::Local::now(),
-                last_ms_from_launch: AtomicUsize::new(0),
+                last_ms_from_launch: std::sync::atomic::AtomicUsize::new(0),
             };
 
             rocket::ignite()
@@ -181,7 +181,7 @@ fn main() {
                 )
                 .manage(tmgs)
                 .manage(conf)
-                .attach(Template::fairing())
+                .attach(rocket_contrib::templates::Template::fairing())
                 .launch();
         }
         Err(e) => {
