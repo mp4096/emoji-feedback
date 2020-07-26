@@ -4,8 +4,25 @@
 
 ## Quickstart
 1. Install the latest Rust nightly
-2. Clone the repo and `cd` into it
-3. `cargo run -- ./examples/en.toml`
+1. Clone the repo and `cd` into it
+1. `cargo run -- ./examples/en.toml`
+1. Open [`localhost:8000`](http://localhost:8000) in your browser
+1. Check out the results in `./feedback.csv`
+
+## Runtime dependencies
+
+```
+$ cargo build --release
+$ ldd target/release/emoji-feedback
+    linux-vdso.so.1 =>  (0x00007fffec5b5000)
+    libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f0a6fa2e000)
+    librt.so.1 => /lib/x86_64-linux-gnu/librt.so.1 (0x00007f0a6f826000)
+    libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f0a6f609000)
+    libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f0a6f3f3000)
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f0a6f029000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f0a702b2000)
+    libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f0a6ed20000)
+```
 
 ## Disclaimer
 * Only modern browsers (Chromium >= 42 on Linux, Chrome >= 42 on Android)
